@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Salary Predictor</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="card">
+
+      <div class="header">
+        <h1>Salary Predictor</h1>
+
+        <p>
+          Estimate your earning potential based on experience.
+        </p>
+      </div>
+
+      <div class="input-group">
+
+        <label for="experience">
+          Years of Experience
+        </label>
+
+        <input
+          type="number"
+          id="experience"
+          placeholder="e.g. 5"
+          min="0"
+        >
+
+      </div>
+
+      <button
+        id="predictBtn"
+        onclick="predictSalary()"
+      >
+        Predict Salary
+      </button>
+
+      <div id="result" class="result-box">
+        Prediction will appear here
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    // LIVE API URL
+    const API_URL =
+      "/predict";
+
+    async function predictSalary() {
+
+      const experience =
+        document.getElementById("experience").value;
+
+      const result =
+        document.getElementById("result");
+
+      // Validation
+      if (experience === "") {
+
+        result.innerHTML =
+          "Please enter experience";
+
+        result.style.color = "red";
+
+        return;
+      }
+
+      result.innerHTML =
+        "Predicting Salary...";
+
+      result.style.color =
+        "black";
+
+      try {
+
+        const response = await fetch(API_URL, {
+
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+            experience: Number(experience)
+          })
+
+        });
+
+        const data = await response.json();
+
+        console.log(data);
+
+        // FIXED RESPONSE
+        result.innerHTML =
+          `Predicted Salary: ₹ ${data.Salary}`;
+
+        result.style.color =
+          "green";
+
+      }
+
+      catch (error) {
+
+        console.log(error);
+
+        result.innerHTML =
+          "API Connection Error";
+
+        result.style.color =
+          "red";
+      }
+    }
+
+  </script>
+
+
+</body>
+</html>
